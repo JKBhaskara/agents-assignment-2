@@ -405,9 +405,9 @@ This assignment uses **GitHub Classroom**. Your work is submitted by pushing to 
 
 ### How Grading Works
 
-- When you push to `main`, the autograder automatically creates a **Pull Request** with your grading results
-- Check the **Pull Requests** tab on your GitHub repository to see your score and feedback
-- You can push multiple times before the deadline; each push triggers a new grading run
+- Your submission is graded from the code pushed to `main` in your repository
+- You can push multiple times before the deadline; the latest state on `main` at the deadline is what's graded
+- Make sure your final code is committed and pushed before the deadline
 
 ### Important
 
