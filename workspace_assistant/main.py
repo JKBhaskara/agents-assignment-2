@@ -9,11 +9,12 @@ Usage:
 
 import argparse
 import asyncio
+
 from google.adk.runners import InMemoryRunner
 from google.genai import types as genai_types
 from rich.console import Console
-from rich.prompt import Prompt
 from rich.markdown import Markdown
+from rich.prompt import Prompt
 
 from agent import create_agent
 
@@ -23,9 +24,28 @@ USER_ID = "user"
 SESSION_ID = "session"
 
 
+def ensure_session(runner) -> object:
+    """Ensure the runner has an initialized session for the configured user and ID."""
+    app_name = getattr(runner, "app_name", "InMemoryRunner")
+    existing_session = runner.session_service.get_session_sync(
+        app_name=app_name,
+        user_id=USER_ID,
+        session_id=SESSION_ID,
+    )
+    if existing_session is not None:
+        return existing_session
+
+    return runner.session_service.create_session_sync(
+        app_name=app_name,
+        user_id=USER_ID,
+        session_id=SESSION_ID,
+    )
+
+
 def run_query(runner, query: str) -> str:
     """Execute a query using the InMemoryRunner and return the response."""
     try:
+        ensure_session(runner)
         user_message = genai_types.Content(
             role="user",
             parts=[genai_types.Part(text=query)],
@@ -52,7 +72,7 @@ def interactive_mode(runner):
 
     while True:
         query = Prompt.ask("[cyan]You[/cyan]")
-        if query.lower() in ('quit', 'exit', 'q'):
+        if query.lower() in ("quit", "exit", "q"):
             break
         if not query.strip():
             continue
